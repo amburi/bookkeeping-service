@@ -1,0 +1,5 @@
+.idea
+*/.env
+
+# OS X
+.DS_Store
