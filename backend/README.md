@@ -1,17 +1,9 @@
-# Bookkeeping service API
+# Bookkeeping Service API (Backend)
 
 Bookkeeping service APIs enable users to record and retrieve transaction information.
 
-A transaction represents the transfer of an asset between two entities on a specific date and time, known as the transaction date. We refer to the first entity as the party and the second entity as the counterparty. An asset can encompass various valuable items such as stocks, cars, or houses.
+Checkout the wiki pages to gain a comprehensive understanding of the project requirements, database schema, and API outline document.
 
-There are four types of transactions:
-
-- Deposit: The party deposits a specified amount in Euros to the counterparty.
-- Withdrawal: The reverse direction of a deposit.
-- Buy: The party purchases an asset from the counterparty by exchanging the asset's value in Euros.
-- Sell: The opposite direction of a buy transaction.
-
-A detailed document outlining the functional and non-functional requirements of the project: [Project Requirements](../Project_Requirement.md)
 
 ## Tech-Stack
 
@@ -24,7 +16,7 @@ A detailed document outlining the functional and non-functional requirements of 
 * [Makefile](https://www.gnu.org/software/make/)
 * [Swagger](https://swagger.io/)
 
-## Run App Instructions
+## Run App
 
 ### Prerequisites
 
@@ -93,16 +85,11 @@ To set the port to access the application, update the configuration in the `.env
       ```shell
       php artisan db:seed
       ```
-
-## API Documentation
-
-- [Comprehensive documentation of all the API endpoints](../API_Documentation.md), request/response formats, and usage examples.
-- [The collection of backend APIs](/backend/src/storage/api-docs/api-docs.json) ready to be imported into any API platform like [Postman](https://www.postman.com/) for testing.
-- Swagger API documentation will be available at http://localhost:8001/api/documentation
-
-## Database schema
-
-![Database Schema](../Database_Schema.drawio.png)
-
-
-
+5. Generate the API documentation:
+```shell
+php artisan l5-swagger:generate
+```
+6. Run the tests:
+```shell
+php artisan test
+```
