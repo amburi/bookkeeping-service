@@ -1,0 +1,5 @@
+/.idea/*
+/mysql*/*
+src/vendor/*
+src/.env
+

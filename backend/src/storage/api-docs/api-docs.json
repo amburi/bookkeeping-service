@@ -1,0 +1,301 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Bookkeeping Service API",
+        "description": "Bookkeeping service APIs enables users to record and retrieve transactions information",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Amburi Roy",
+            "email": "amburi.roy@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8001/",
+            "description": "Bookkeeping Service OpenApi Host"
+        }
+    ],
+    "paths": {
+        "/api/asset/update": {
+            "post": {
+                "tags": [
+                    "asset"
+                ],
+                "summary": "Update Asset Price",
+                "description": "Update asset price",
+                "operationId": "updateAsset",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "asset_id": {
+                                        "type": "required|exists:assets,id",
+                                        "example": "1"
+                                    },
+                                    "latest_price": {
+                                        "type": "numeric"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transaction/create": {
+            "post": {
+                "tags": [
+                    "transaction"
+                ],
+                "summary": "Recording New Transaction",
+                "description": "Create transaction",
+                "operationId": "createTransaction",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "party_id": {
+                                        "type": "required|exists:users,id",
+                                        "example": "1"
+                                    },
+                                    "counterparty_id": {
+                                        "type": "required|exists:users,id",
+                                        "example": "2"
+                                    },
+                                    "type": {
+                                        "type": "required|string|max:255",
+                                        "enum": [
+                                            "DEPOSIT",
+                                            "WITHDRAW",
+                                            "BUY",
+                                            "SELL"
+                                        ],
+                                        "example": "DEPOSIT"
+                                    },
+                                    "asset_id": {
+                                        "type": "integer"
+                                    },
+                                    "quantity": {
+                                        "type": "integer"
+                                    },
+                                    "total_amount": {
+                                        "type": "numeric"
+                                    },
+                                    "comment": {
+                                        "type": "nullable|string|max:1000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Transaction created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Transaction"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transaction/position/{userId}/{date}": {
+            "get": {
+                "tags": [
+                    "transaction"
+                ],
+                "summary": "Daily Position",
+                "description": "Get user's position on a given date",
+                "operationId": "dailyPosition",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "description": "Date in YYYY-MM-DD format",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                        },
+                        "example": "2023-07-01"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User's daily position by date",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Transaction"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Asset": {
+                "description": "Class AssetResource",
+                "type": "object"
+            },
+            "Transaction": {
+                "description": "Class TransactionResource",
+                "type": "object"
+            },
+            "User": {
+                "description": "Class UserResource",
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "transaction",
+            "description": "Manage Transaction APIs"
+        },
+        {
+            "name": "asset",
+            "description": "Manage Asset API"
+        }
+    ]
+}
